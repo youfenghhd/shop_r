@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.test.mapper.CommodityMapper">
+
+    <select id="findAll" resultType="commodity">
+        select * from Commodity
+    </select>
+
+    <select id="findByCommodity" parameterType="commodity" resultType="commodity">
+        select * from Commodity
+        <where>
+            <if test="cname != null and cname != ''">and cname like concat("%", #{cname}, "%")</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+        </where>
+    </select>
+
+    <update id="update" parameterType="commodity">
+        update Commodity set status = #{status} where id = #{id}
+    </update>
+    <update id="updateCommodity" parameterType="commodity">
+        update Commodity set cname = #{cname}, price = #{price}, repertory = #{repertory} where id = #{id}
+    </update>
+    <insert id="insert" parameterType="commodity">
+        insert into Commodity(cname, price, repertory) value(#{cname}, #{price}, #{repertory})
+    </insert>
+</mapper>

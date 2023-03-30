@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.test.mapper.UserMapper">
+
+    <select id="findAll" resultType="user">
+        select * from User
+    </select>
+
+    <select id="findById" resultType="user">
+        select * from User where id = #{id}
+    </select>
+
+    <insert id="save" parameterType="user">
+        insert into User(id, username) value(#{id}, #{username})
+    </insert>
+
+    <update id="update" parameterType="user">
+        update User set username = #{username} where id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        delete from User where id = #{id}
+    </delete>
+    <resultMap id="ordersMap" type="orders">
+        <id property="id" column="id"/>
+        <result property="ordertime" column="ordertime"/>
+        <result property="total" column="total"/>
+        <result property="uid" column="uid"/>
+
+        <association property="user" javaType="user">
+            <id property="id" column="uid"/>
+            <result property="username"  column="username"/>
+            <result property="password" column="password"/>
+            <result property="gender" column="gender"/>
+            <result property="address" column="address"/>
+            <result property="status" column="status"/>
+            <result property="balance" column="balance"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="userMap" type="user">
+        <id property="id" column="id"/>
+        <result property="username"  column="username"/>
+        <result property="password" column="password"/>
+        <result property="gender" column="gender"/>
+        <result property="address" column="address"/>
+        <result property="status" column="status"/>
+        <result property="balance" column="balance"/>
+
+        <collection property="ordersList" ofType="orders">
+            <id property="id" column="ordersid"/>
+            <result property="ordertime" column="ordertime"/>
+            <result property="total" column="total"/>
+            <result property="uid" column="uid"/>
+        </collection>
+    </resultMap>
+
+    <select id="findOrdersWithUser" resultMap="ordersMap">
+        select * from Orders left join User on User.id = Orders.uid
+    </select>
+
+    <select id="findUserWithOrders" resultMap="userMap">
+        select *, o.id as ordersid from User u left join Orders o on u.id = o.uid
+    </select>
+
+    <select id="login" parameterType="user" resultType="user">
+        select * from User where username = #{username} and password = #{password}
+    </select>
+
+    <select id="findByName" parameterType="string" resultType="user">
+        select * from User where username = #{username}
+    </select>
+
+    <insert id="register" parameterType="user">
+        insert into User(username, password, gender, address) value(#{username}, #{password}, #{gender}, #{address})
+    </insert>
+
+    <update id="updatePassword" parameterType="user">
+        update User set password = #{password} where id = #{id}
+    </update>
+
+    <update id="updateStatus" parameterType="user">
+        update User set status = #{status} where id = #{id}
+    </update>
+    
+    <select id="findUserIdByUsername" parameterType="string" resultType="int">
+        select id from User where username = #{username}
+    </select>
+
+    <select id="findUserByUsername" parameterType="string" resultType="user">
+        select * from User where username = #{username}
+    </select>
+
+    <update id="updateUser" parameterType="user">
+        update User set address = #{address}, password = #{password} where id = #{id}
+    </update>
+</mapper>
